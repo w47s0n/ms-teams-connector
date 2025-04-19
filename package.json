@@ -1,0 +1,30 @@
+{
+  "name": "teams-messenger-lambda",
+  "version": "1.0.0",
+  "description": "Lambda function that forwards direct SNS messages to Microsoft Teams",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "serverless deploy",
+    "deploy:dev": "serverless deploy --stage dev",
+    "deploy:prod": "serverless deploy --stage prod",
+    "offline": "serverless offline",
+    "remove": "serverless remove"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "sns",
+    "teams"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.0"
+  }
+} 

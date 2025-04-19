@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda function to forward SNS messages to Microsoft Teams
+
+Parameters:
+  TeamsWebhookUrl:
+    Type: String
+    Description: Microsoft Teams webhook URL
+    NoEcho: true
+  
+  EnvironmentName:
+    Type: String
+    Default: dev
+    Description: Environment name (dev, staging, prod)
+
+Resources:
+  TeamMessengerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 30
+      Environment:
+        Variables:
+          TEAMS_WEBHOOK_URL: !Ref TeamsWebhookUrl
+      Policies:
+        - CloudWatchLogsFullAccess
+      Events:
+        SNSEvent:
+          Type: SNS
+          Properties:
+            Topic: !Ref NotificationTopic
+
+  NotificationTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub "TeamMessenger-${EnvironmentName}"
+      TopicName: !Sub "team-messenger-${EnvironmentName}"
+
+Outputs:
+  TeamMessengerFunction:
+    Description: Lambda Function ARN
+    Value: !GetAtt TeamMessengerFunction.Arn
+  
+  NotificationTopic:
+    Description: SNS Topic ARN
+    Value: !Ref NotificationTopic
+  
+  NotificationTopicName:
+    Description: SNS Topic Name
+    Value: !GetAtt NotificationTopic.TopicName 

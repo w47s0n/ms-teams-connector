@@ -1,0 +1,63 @@
+service: team-messenger
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  architecture: x86_64
+  memorySize: 128
+  timeout: 30
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'} # Lambda deployment region
+  environment:
+    TEAMS_WEBHOOK_URL: ${param:teamsWebhookUrl, 'https://mum0.webhook.office.com/webhookb2/4928ae4e-5cd0-4092-b0cb-f9318ee715d5@28fd0d9a-e529-413f-88d5-7f33f67675ef/IncomingWebhook/2fab0241d5bb4af7a3fe1ae03a7f8dcb/f13f15a4-8d84-4d2e-8850-7505d71f7d0a/V2R4vN7I5vsXXlcLeUsoVPx29Z7TXWUBF8Tcxl0MpG2oY1'}
+    NODE_OPTIONS: '--experimental-specifier-resolution=node'
+    # EXISTING_SNS_TOPIC_ARN: arn:aws:sns:us-east-1:273354643789:CodePipeline # Can optionally keep for reference or remove
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: 'arn:aws:logs:*:*:*'
+        # SQS permissions are no longer needed
+
+functions:
+  teamsMessenger:
+    handler: index.handler
+    description: Forwards SNS messages to Microsoft Teams
+    # Trigger directly from the Standard SNS topic
+    events: 
+      - sns:
+          arn: arn:aws:sns:us-east-1:273354643789:CodePipeline 
+          # topicName: # Can use topicName instead of ARN if creating the topic here
+          # filterPolicy: {} # Add filter policy if needed
+
+# Remove SQS/SNS Subscription/Policy resources
+# resources:
+#   Resources:
+#     ...
+#   Outputs:
+#     ...
+
+plugins:
+  - serverless-offline
+
+package:
+  patterns:
+    - '!node_modules/.bin/**'
+    - '!.git/**'
+    - '!.github/**'
+    - '!.vscode/**'
+    - '!test/**'
+    - '!README.md'
+    - '!deploy.sh'
+    - '!template.yaml'
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002 

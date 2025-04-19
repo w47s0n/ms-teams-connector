@@ -1,0 +1,16 @@
+### Send webhook to Microsoft Teams hi:)
+POST https://mum0.webhook.office.com/webhookb2/4928ae4e-5cd0-4092-b0cb-f9318ee715d5@28fd0d9a-e529-413f-88d5-7f33f67675ef/IncomingWebhook/2fab0241d5bb4af7a3fe1ae03a7f8dcb/f13f15a4-8d84-4d2e-8850-7505d71f7d0a/V2R4vN7I5vsXXlcLeUsoVPx29Z7TXWUBF8Tcxl0MpG2oY1
+Content-Type: application/json
+
+{
+  "type": "message",
+  "attachments": [
+    {
+      "contentType": "application/vnd.microsoft.card.adaptive",
+      "contentUrl": null,
+      "content": {
+        "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+        "type": "AdaptiveCard",
+        "version": "1.2",
+        "body": [ ]
+}
